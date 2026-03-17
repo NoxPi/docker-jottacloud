@@ -13,9 +13,19 @@ jobs:
       packages: write
     steps:
       - uses: actions/checkout@v4
-      - name: Login to GHCR
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Lowercase the repo name and owner
+        run: |
+          echo "IMAGE_ID=$(echo ghcr.io/${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
       - name: Build and Push
         run: |
-          docker build -t ghcr.io/${{ github.repository_owner }}/jotta-cli:latest .
-          docker push ghcr.io/${{ github.repository_owner }}/jotta-cli:latest
+          docker build -t ${{ env.IMAGE_ID }}:latest .
+          docker push ${{ env.IMAGE_ID }}:latest
