@@ -7,9 +7,9 @@ RUN apt-get update && apt-get install -y \
     curl \
     gnupg \
     ca-certificates \
-    && curl -fsSL https://repo.jotta.cloud/public.gpg | gpg --dearmor -o /usr/share/keyrings/jotta.gpg \
+    && curl -fsSL https://repo.jotta.cloud/public.gpg -o /usr/share/keyrings/jotta.gpg
     && echo "deb [signed-by=/usr/share/keyrings/jotta.gpg] https://repo.jotta.cloud/ubuntu debian main" > /etc/apt/sources.list.d/jotta-cli.list \
-    && apt-get update \
+    && apt-get update -y \
     && apt-get install -y jotta-cli \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
