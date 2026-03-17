@@ -21,11 +21,13 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Lowercase the repo name and owner
+      # This step fixes your error by forcing everything to lowercase
+      - name: Prepare Lowercase Image Name
         run: |
-          echo "IMAGE_ID=$(echo ghcr.io/${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+          IMAGE_PATH="ghcr.io/${{ github.repository }}"
+          echo "IMAGE_ID=$(echo $IMAGE_PATH | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
 
       - name: Build and Push
         run: |
           docker build -t ${{ env.IMAGE_ID }}:latest .
-          docker push ${{ env.IMAGE_ID }}:latest
+          docker push ${{ env.IMAGE_ID }}:latest:latest
